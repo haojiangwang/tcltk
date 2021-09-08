@@ -20,7 +20,7 @@ function printHelp {
     echo "Script version: $VERSION"
     echo ""
     echo "Syntax:"
-    echo " devel-setup.sh [<options>]"
+    echo " setupdev [<options>]"
     echo "Options (optional):"
     echo " -help: Print this help text."
 }
