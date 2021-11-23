@@ -51,10 +51,10 @@ extern "C" {
 #define TCL_MAJOR_VERSION   8
 #define TCL_MINOR_VERSION   6
 #define TCL_RELEASE_LEVEL   TCL_FINAL_RELEASE
-#define TCL_RELEASE_SERIAL  11
+#define TCL_RELEASE_SERIAL  12
 
 #define TCL_VERSION	    "8.6"
-#define TCL_PATCH_LEVEL	    "8.6.11"
+#define TCL_PATCH_LEVEL	    "8.6.12"
 
 /*
  *----------------------------------------------------------------------------
@@ -2489,7 +2489,7 @@ EXTERN void		Tcl_GetMemoryInfo(Tcl_DString *dsPtr);
 	++(objPtr)->refCount
     /*
      * Use do/while0 idiom for optimum correctness without compiler warnings.
-     * http://c2.com/cgi/wiki?TrivialDoWhileLoop
+     * https://wiki.c2.com/?TrivialDoWhileLoop
      */
 #   define Tcl_DecrRefCount(objPtr) \
 	do { \
