@@ -600,7 +600,7 @@ TclCreateProc(
 	     */
 
 	    localPtr = (CompiledLocal *)ckalloc(
-		    TclOffset(CompiledLocal, name) + fieldValues[0]->length + 1);
+		    TclOffset(CompiledLocal, name) + 1U + fieldValues[0]->length);
 	    if (procPtr->firstLocalPtr == NULL) {
 		procPtr->firstLocalPtr = procPtr->lastLocalPtr = localPtr;
 	    } else {
@@ -1428,7 +1428,6 @@ InitArgsAndLocals(
     numArgs = procPtr->numArgs;
     argCt = framePtr->objc - skip;	/* Set it to the number of args to the
 					 * procedure. */
-    argObjs = framePtr->objv + skip;
     if (numArgs == 0) {
 	if (argCt) {
 	    goto incorrectArgs;
@@ -1436,6 +1435,7 @@ InitArgsAndLocals(
 	    goto correctArgs;
 	}
     }
+    argObjs = framePtr->objv + skip;
     imax = ((argCt < numArgs-1) ? argCt : numArgs-1);
     for (i = 0; i < imax; i++, varPtr++, defPtr ? defPtr++ : defPtr) {
 	/*

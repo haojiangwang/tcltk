@@ -69,7 +69,7 @@ static void		UpdateStringOfByteArray(Tcl_Obj *listPtr);
 static void		DeleteScanNumberCache(Tcl_HashTable *numberCachePtr);
 static int		NeedReversing(int format);
 static void		CopyNumber(const void *from, void *to,
-			    unsigned length, int type);
+			    unsigned int length, int type);
 /* Binary ensemble commands */
 static Tcl_ObjCmdProc	BinaryFormatCmd;
 static Tcl_ObjCmdProc	BinaryScanCmd;
@@ -189,7 +189,7 @@ typedef struct ByteArray {
 } ByteArray;
 
 #define BYTEARRAY_SIZE(len) \
-		((unsigned) (TclOffset(ByteArray, bytes) + (len)))
+		(((unsigned)TclOffset(ByteArray, bytes) + (len)))
 #define GET_BYTEARRAY(objPtr) \
 		((ByteArray *) (objPtr)->internalRep.twoPtrValue.ptr1)
 #define SET_BYTEARRAY(objPtr, baPtr) \
@@ -927,7 +927,7 @@ BinaryFormatCmd(
      * bytes and filling with nulls.
      */
 
-    resultPtr = Tcl_NewObj();
+    TclNewObj(resultPtr);
     buffer = Tcl_SetByteArrayLength(resultPtr, length);
     memset(buffer, 0, length);
 
@@ -1360,7 +1360,7 @@ BinaryScanCmd(
 		}
 	    }
 	    src = buffer + offset;
-	    valuePtr = Tcl_NewObj();
+	    TclNewObj(valuePtr);
 	    Tcl_SetObjLength(valuePtr, count);
 	    dest = TclGetString(valuePtr);
 
@@ -1415,7 +1415,7 @@ BinaryScanCmd(
 		}
 	    }
 	    src = buffer + offset;
-	    valuePtr = Tcl_NewObj();
+	    TclNewObj(valuePtr);
 	    Tcl_SetObjLength(valuePtr, count);
 	    dest = TclGetString(valuePtr);
 
@@ -1499,7 +1499,7 @@ BinaryScanCmd(
 		if ((length - offset) < (count * size)) {
 		    goto done;
 		}
-		valuePtr = Tcl_NewObj();
+		TclNewObj(valuePtr);
 		src = buffer + offset;
 		for (i = 0; i < count; i++) {
 		    elementPtr = ScanNumber(src, cmd, flags, &numberCachePtr);
@@ -1649,7 +1649,7 @@ GetFormatSpec(
 	(*formatPtr)++;
 	*countPtr = BINARY_ALL;
     } else if (isdigit(UCHAR(**formatPtr))) { /* INTL: digit */
-	unsigned long int count;
+	unsigned long count;
 
 	errno = 0;
 	count = strtoul(*formatPtr, (char **) formatPtr, 10);
@@ -2521,7 +2521,7 @@ BinaryEncode64(
 	maxlen = 0;
     }
 
-    resultObj = Tcl_NewObj();
+    TclNewObj(resultObj);
     data = Tcl_GetByteArrayFromObj(objv[objc - 1], &count);
     if (count > 0) {
 	unsigned char *cursor = NULL;
@@ -2599,7 +2599,8 @@ BinaryEncodeUu(
 {
     Tcl_Obj *resultObj;
     unsigned char *data, *start, *cursor;
-    int offset, count, rawLength, n, i, j, bits, index;
+    int offset, count, rawLength, i, j, bits, index;
+    unsigned int n;
     int lineLength = 61;
     const unsigned char SingleNewline[] = { UCHAR('\n') };
     const unsigned char *wrapchar = SingleNewline;

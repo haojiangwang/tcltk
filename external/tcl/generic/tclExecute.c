@@ -193,10 +193,10 @@ typedef struct TEBCdata {
 #define PUSH_TAUX_OBJ(objPtr) \
     do {							\
 	if (auxObjList) {					\
-	    objPtr->length += auxObjList->length;		\
+	    (objPtr)->length += auxObjList->length;		\
 	}							\
-	objPtr->internalRep.twoPtrValue.ptr1 = auxObjList;	\
-	auxObjList = objPtr;					\
+	(objPtr)->internalRep.twoPtrValue.ptr1 = auxObjList;	\
+	auxObjList = (objPtr);					\
     } while (0)
 
 #define POP_TAUX_OBJ() \
@@ -5609,16 +5609,10 @@ TEBCresume(
 	    goto gotError;
 	}
 
-	if (fromIdx < 0) {
-	    fromIdx = 0;
-	}
-	if (toIdx >= length) {
-	    toIdx = length;
-	}
-	if (toIdx >= fromIdx) {
-	    objResultPtr = Tcl_GetRange(OBJ_AT_DEPTH(2), fromIdx, toIdx);
-	} else {
+	if (toIdx < 0) {
 	    TclNewObj(objResultPtr);
+	} else {
+	    objResultPtr = Tcl_GetRange(OBJ_AT_DEPTH(2), fromIdx, toIdx);
 	}
 	TRACE_APPEND(("\"%.30s\"\n", O2S(objResultPtr)));
 	NEXT_INST_V(1, 3, 1);
@@ -5652,13 +5646,6 @@ TEBCresume(
 	}
 
 	toIdx = TclIndexDecode(toIdx, length - 1);
-	if (toIdx < 0) {
-	    goto emptyRange;
-	} else if (toIdx >= length) {
-	    toIdx = length - 1;
-	}
-
-	assert ( toIdx >= 0 && toIdx < length );
 
 	/*
 	assert ( fromIdx != TCL_INDEX_BEFORE );
@@ -5672,13 +5659,8 @@ TEBCresume(
 	if (fromIdx == TCL_INDEX_AFTER) {
 	    goto emptyRange;
 	}
-
 	fromIdx = TclIndexDecode(fromIdx, length - 1);
-	if (fromIdx < 0) {
-	    fromIdx = 0;
-	}
-
-	if (fromIdx <= toIdx) {
+	if (toIdx >= 0) {
 	    objResultPtr = Tcl_GetRange(valuePtr, fromIdx, toIdx);
 	} else {
 	emptyRange:
@@ -5855,7 +5837,9 @@ TEBCresume(
 	p = ustring1;
 	end = ustring1 + length;
 	for (; ustring1 < end; ustring1++) {
-	    if ((*ustring1 == *ustring2) && (length2==1 ||
+	    if ((*ustring1 == *ustring2) &&
+		/* Fix bug [69218ab7b]: restrict max compare length. */
+		(end-ustring1 >= length2) && (length2==1 ||
 		    memcmp(ustring1, ustring2, sizeof(Tcl_UniChar) * length2)
 			    == 0)) {
 		if (p != ustring1) {
@@ -6379,10 +6363,10 @@ TEBCresume(
 		     * Handle shifts within the native long range.
 		     */
 
-		    if ((size_t) shift < CHAR_BIT*sizeof(long) && (l1 != 0)
+		    if (((size_t) shift < CHAR_BIT*sizeof(long))
 			    && !((l1>0 ? l1 : ~l1) &
-				-(1L<<(CHAR_BIT*sizeof(long) - 1 - shift)))) {
-			lResult = l1 << shift;
+				-(1UL<<(CHAR_BIT*sizeof(long) - 1 - shift)))) {
+			lResult = (unsigned long)l1 << shift;
 			goto longResultOfArithmetic;
 		    }
 		}
@@ -8462,24 +8446,24 @@ ExecuteExtendedBinaryMathOp(
 {
 #define LONG_RESULT(l) \
     if (Tcl_IsShared(valuePtr)) {		\
-	TclNewLongObj(objResultPtr, l);		\
+	TclNewLongObj(objResultPtr, (l));		\
 	return objResultPtr;			\
     } else {					\
-	Tcl_SetLongObj(valuePtr, l);		\
+	Tcl_SetLongObj(valuePtr, (l));		\
 	return NULL;				\
     }
 #define WIDE_RESULT(w) \
     if (Tcl_IsShared(valuePtr)) {		\
 	return Tcl_NewWideIntObj(w);		\
     } else {					\
-	Tcl_SetWideIntObj(valuePtr, w);		\
+	Tcl_SetWideIntObj(valuePtr, (w));		\
 	return NULL;				\
     }
 #define BIG_RESULT(b) \
     if (Tcl_IsShared(valuePtr)) {		\
 	return Tcl_NewBignumObj(b);		\
     } else {					\
-	Tcl_SetBignumObj(valuePtr, b);		\
+	Tcl_SetBignumObj(valuePtr, (b));		\
 	return NULL;				\
     }
 #define DOUBLE_RESULT(d) \
