@@ -19,6 +19,8 @@ fi
 if [ ! -d $COMPILEDIR/$MODULE ] || [ -n "$SW_FORCECOPY" ]; then
     echo -n "Copying new sources ... "
     rsync -a --exclude "*/.git" $EXTSRCDIR/$MODULE $COMPILEDIR/
+    cp $COMPILEDIR/tk/generic/tk.h $COMPILEDIR/tcl/generic/
+    cp $COMPILEDIR/tk/generic/tkDecls.h $COMPILEDIR/tcl/generic/
     echo done
 fi
 ## patch to MINGW64

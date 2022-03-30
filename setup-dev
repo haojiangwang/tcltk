@@ -49,4 +49,4 @@ if [[ $UID -ne 0 ]]; then
 fi
 
 ## install development tools
-apt install autoconf gcc make chrpath libpq5 libssl-dev libxt-dev libx11-dev libxft-dev postgresql-server-dev-all libcairo2-dev libxcursor-dev libfftw3-dev libsnmp-dev
+apt install autoconf g++ gcc make chrpath libpq5 libssl-dev libxt-dev libx11-dev libxft-dev postgresql-server-dev-all libcairo2-dev libxcursor-dev libfftw3-dev libsnmp-dev swig
