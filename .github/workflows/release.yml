@@ -1,9 +1,8 @@
 name: Release
 
 on:
-  push:
-    tags:
-      - version-*
+  release:
+    types: [published]
   workflow_dispatch:
 
 jobs:
@@ -29,13 +28,18 @@ jobs:
           token: ${{ secrets.ATVIEEGSEAUTO }}
           
       - name: Build Debian on ${{ matrix.os }}
-        run: |
-          cd tcltk
-          ./compile-base
-          ./compile-extras
-          debdir=$(mktemp -d)
-          ./build-deb -nobranchname -outdir $debdir -allowdirty
-          echo -n "Uploading to GSE server ... "
-          scp $debdir/* www-data@gse.auk.cvclab.lan:/cmdata/www/builds/TCLTK/
-          echo done
-          rm -rf $debdir
+        run: |	
+          mkdir -p ./debdir
+          rm -rf ./debdir/*
+          ./tcltk/compile-base
+          ./tcltk/compile-extras
+          ./gse4-lib/build-deb -nobranchname -outdir ./debdir -allowdirty
+      
+      - name: Upload Release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ./debdir/*
+          tag: ${{ github.ref }}
+          overwrite: true
+          file_glob: true
