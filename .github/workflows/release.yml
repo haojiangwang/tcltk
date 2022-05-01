@@ -31,9 +31,10 @@ jobs:
         run: |	
           mkdir -p ./debdir
           rm -rf ./debdir/*
-          ./tcltk/compile-base
-          ./tcltk/compile-extras
-          ./gse4-lib/build-deb -nobranchname -outdir ./debdir -allowdirty
+          cd tcltk
+          ./compile-base
+          ./compile-extras
+          ./build-deb -nobranchname -outdir ../debdir -allowdirty
       
       - name: Upload Release
         uses: svenstaro/upload-release-action@v2
