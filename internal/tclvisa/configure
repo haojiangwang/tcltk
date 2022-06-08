@@ -4753,7 +4753,7 @@ done
 
 
 
-    vars="-lvisa"
+    vars="-lrsvisa"
     for i in $vars; do
 	if test "${TEA_PLATFORM}" = "windows" -a "$GCC" = "yes" ; then
 	    # Convert foo.lib to -lfoo for GCC.  No-op if not *.lib

@@ -1,0 +1,13 @@
+* Preconditions
+
+install the package rsvisa from Rohde&Schwarz
+
+* configure
+
+chmod +x configure
+
+# set flags for visa and tcl libraries
+export CFLAGS=-I/usr/include/rsvisa
+export LDFLAGS=-L/opt/tcltk86/lib
+
+./configure --with-tcl=/opt/tcltk86/lib
