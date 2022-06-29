@@ -1,0 +1,5 @@
+*.o
+config.*
+Makefile
+doc/
+pkgIndex.tcl

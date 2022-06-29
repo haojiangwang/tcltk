@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 ## module
-MODULE=photoresize
+MODULE=snmptools
 
 ## load defaults
 . ./common.sh
@@ -18,25 +18,21 @@ fi
 ## copy source to temp compile path
 if [ ! -d $COMPILEDIR/$MODULE ] || [ -n "$SW_FORCECOPY" ]; then
     echo -n "Copying new sources ... "
-    rsync -a --exclude "*/.git" $EXTSRCDIR/$MODULE $COMPILEDIR/
-    cp $COMPILEDIR/tk/generic/tk.h $COMPILEDIR/tcl/generic/
-    cp $COMPILEDIR/tk/generic/tkDecls.h $COMPILEDIR/tcl/generic/
+    rsync -a --exclude "*/.git" $INTSRCDIR/$MODULE $COMPILEDIR/
     echo done
 fi
-## patch to MINGW64
-sed -i "s|MINGW32_|MINGW64_|g" $COMPILEDIR/$MODULE/configure
 
 ## change to compile dir
 cd $COMPILEDIR/$MODULE
 
 ## configure and make
 autoconf
-./configure --prefix=$INSTALLDIR --enable-64bit
+./configure --prefix=$INSTALLDIR --exec-prefix=$INSTALLDIR --mandir=$iSHAREDIR --enable-64bit
 make install
 
 echo -n "Copying extras ... "
 ## copy licence file
-rsync -a $COMPILEDIR/$MODULE/LICENSE $iLICENCEDIR/$MODULE.licence
+rsync -a $COMPILEDIR/$MODULE/license.terms $iLICENCEDIR/$MODULE.licence
 echo done
 
 ## fini
