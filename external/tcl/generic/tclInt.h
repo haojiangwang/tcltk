@@ -4316,7 +4316,7 @@ MODULE_SCOPE void	TclDbInitNewObj(Tcl_Obj *objPtr, const char *file,
 	(objPtr)->bytes	 = tclEmptyStringRep; \
 	(objPtr)->length = 0; \
     } else { \
-	(objPtr)->bytes = (char *) ckalloc((len) + 1); \
+	(objPtr)->bytes = (char *) ckalloc((unsigned int)(len) + 1U); \
 	memcpy((objPtr)->bytes, (bytePtr), (len)); \
 	(objPtr)->bytes[len] = '\0'; \
 	(objPtr)->length = (len); \
@@ -4605,7 +4605,7 @@ MODULE_SCOPE Tcl_PackageInitProc Procbodytest_SafeInit;
  *
  * MODULE_SCOPE void	TclSetIntObj(Tcl_Obj *objPtr, int intValue);
  * MODULE_SCOPE void	TclSetLongObj(Tcl_Obj *objPtr, long longValue);
- * MODULE_SCOPE void	TclSetBooleanObj(Tcl_Obj *objPtr, long boolValue);
+ * MODULE_SCOPE void	TclSetBooleanObj(Tcl_Obj *objPtr, int intValue);
  * MODULE_SCOPE void	TclSetWideIntObj(Tcl_Obj *objPtr, Tcl_WideInt w);
  * MODULE_SCOPE void	TclSetDoubleObj(Tcl_Obj *objPtr, double d);
  *----------------------------------------------------------------
