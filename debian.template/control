@@ -1,6 +1,6 @@
 Package: tcltk86
 Version: %deb_version%
-Release: 6
+Release: 7
 Pre-Depends: chrpath, awk, sed, libpq5
 Depends: libfftw3-3
 Maintainer: (c) 2022 ATOS, Thomas Perschak
